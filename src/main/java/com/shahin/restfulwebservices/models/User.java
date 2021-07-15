@@ -1,17 +1,19 @@
 package com.shahin.restfulwebservices.models;
 
 
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 import java.util.Date;
 
-
 public class User {
     private Integer id ;
 
-    @Size(min=2 , message= "name must be at least two characters")
+    @Size(min = 2, max=20,message = "must be between 2 and 20")
     private String name ;
-    @Past
+
+    @Past(message = "must be before the current date")
     private Date birthDate ;
 
     public User() {
