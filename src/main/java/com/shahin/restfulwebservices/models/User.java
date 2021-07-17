@@ -1,18 +1,24 @@
 package com.shahin.restfulwebservices.models;
 
 
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-
+import javax.persistence.*;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 import java.util.Date;
 
+@Entity
+@Table(name = "User")
 public class User {
-    private Integer id ;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY )
+    private Integer id ;
+    
+    @Column(name="name")
     @Size(min = 2, max=20,message = "must be between 2 and 20")
     private String name ;
-
+    
+    @Column(name="birthDate")
     @Past(message = "must be before the current date")
     private Date birthDate ;
 
