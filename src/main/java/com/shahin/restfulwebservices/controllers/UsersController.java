@@ -1,7 +1,5 @@
 package com.shahin.restfulwebservices.controllers;
 
-import com.shahin.restfulwebservices.dao.UserDao;
-import com.shahin.restfulwebservices.exception.UserNotFoundException;
 import com.shahin.restfulwebservices.models.User;
 import com.shahin.restfulwebservices.service.UserServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,12 +16,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.validation.*;
+import javax.validation.Valid;
 import java.net.URI;
-import java.text.ParseException;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -34,9 +29,6 @@ public class UsersController {
 
     @Autowired
     private UserServiceImpl userServiceImpl;
-
-    @Autowired
-    private UserDao userDao;
 
     @Autowired
     private MessageSource messageSource;
@@ -58,12 +50,9 @@ public class UsersController {
             @ApiResponse(responseCode = "404", description = "User not found",
                     content = @Content)})
     @GetMapping("users/{id}")
-    public EntityModel<User> retrieveUser(@PathVariable Integer id) throws ParseException {
-        Optional<User> user = userServiceImpl.getUserById(id);
-        if (!user.isPresent()) {
-            throw new UserNotFoundException("id - " + id);
-        }
-        EntityModel<User> userEntityModel = EntityModel.of(user.get());
+    public EntityModel<User> retrieveUser(@PathVariable Integer id) {
+        User user = userServiceImpl.getUserById(id);
+        EntityModel<User> userEntityModel = EntityModel.of(user);
         WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).retrieveAllUsers());
         userEntityModel.add(linkTo.withRel("all-users"));
         return userEntityModel;
@@ -80,10 +69,7 @@ public class UsersController {
                     schema = @Schema(implementation = User.class))} )
     @PostMapping("/users")
     public ResponseEntity<Object> createUser(@Valid @RequestBody User user) {
-        User savedUser = userDao.save(user);
-        ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
-        Validator validator = validatorFactory.getValidator();
-        Set<ConstraintViolation<User>> validate = validator.validate(user);
+        User savedUser = userServiceImpl.save(user);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest().path("/{id}")
                 .buildAndExpand(savedUser.getId()).toUri();
@@ -92,10 +78,7 @@ public class UsersController {
 
     @DeleteMapping("/users/{id}")
     public void deleteUser(@PathVariable Integer id) {
-        User user = userDao.deleteUser(id);
-        if (user == null) {
-            throw new UserNotFoundException("{id} = " + id);
-        }
+        userServiceImpl.deleteUser(id);
     }
 
     @GetMapping(path = "/hello-world-internationalized")
