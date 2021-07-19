@@ -1,8 +1,9 @@
 package com.shahin.restfulwebservices.controllers;
 
-import com.shahin.restfulwebservices.dao.UserDaoService;
+import com.shahin.restfulwebservices.dao.UserDao;
 import com.shahin.restfulwebservices.exception.UserNotFoundException;
 import com.shahin.restfulwebservices.models.User;
+import com.shahin.restfulwebservices.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -31,14 +32,17 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class UsersController {
 
     @Autowired
-    private UserDaoService userDaoService;
+    private UserService userService;
+
+    @Autowired
+    private UserDao userDao;
 
     @Autowired
     private MessageSource messageSource;
 
     @GetMapping("/users")
-    public List<User> retrieveAllUsers() throws ParseException {
-        return userDaoService.findAll();
+    public List<User> retrieveAllUsers() {
+        return userService.getUsers();
     }
 
     @Operation(summary = "Get a User By Its Id")
@@ -54,7 +58,7 @@ public class UsersController {
                     content = @Content)})
     @GetMapping("users/{id}")
     public EntityModel<User> retrieveUser(@PathVariable Integer id) throws ParseException {
-        User user = userDaoService.findOne(id);
+        User user = userDao.findOne(id);
         if (user == null) {
             throw new UserNotFoundException("id - " + id);
         }
@@ -75,7 +79,7 @@ public class UsersController {
                     schema = @Schema(implementation = User.class))} )
     @PostMapping("/users")
     public ResponseEntity<Object> createUser(@Valid @RequestBody User user) {
-        User savedUser = userDaoService.save(user);
+        User savedUser = userDao.save(user);
         ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
         Validator validator = validatorFactory.getValidator();
         Set<ConstraintViolation<User>> validate = validator.validate(user);
@@ -87,7 +91,7 @@ public class UsersController {
 
     @DeleteMapping("/users/{id}")
     public void deleteUser(@PathVariable Integer id) {
-        User user = userDaoService.deleteUser(id);
+        User user = userDao.deleteUser(id);
         if (user == null) {
             throw new UserNotFoundException("{id} = " + id);
         }

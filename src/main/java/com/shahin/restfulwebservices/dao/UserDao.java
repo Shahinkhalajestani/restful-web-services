@@ -1,8 +1,11 @@
 package com.shahin.restfulwebservices.dao;
 
 import com.shahin.restfulwebservices.models.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import javax.persistence.EntityManager;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -10,19 +13,24 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-public class UserDaoService {
+public class UserDao {
     private static List<User> users = new ArrayList<>();
     private static int userCount = 2;
-
+    @Autowired
+    private EntityManager entityManager;
     static {
         users.add(new User(1, "adam", new Date()));
         users.add(new User(2, "abbas", new Date()));
         users.add(new User(3, "shahin", new Date()));
     }
 
-    public List<User> findAll() throws ParseException {
-        users.get(0).setBirthDate(new SimpleDateFormat("dd/mm/yyyy").parse("05/04/2010"));
-        return users;
+    public List<User> findAll() {
+        List<User> resultList = entityManager.createQuery("SELECT u FROM User u").getResultList();
+        if (!CollectionUtils.isEmpty(resultList)){
+            return resultList;
+        }else {
+            return null;
+        }
     }
 
     public User save(User user) {
