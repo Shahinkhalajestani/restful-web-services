@@ -40,15 +40,6 @@ public class User {
         birthDate = birthDate;
     }
 
-    public void addPost(Post post){
-        if(CollectionUtils.isEmpty(this.posts)){
-            this.posts = new ArrayList<>();
-            posts.add(post);
-        }else{
-            posts.add(post);
-        }
-    }
-
     public List<Post> getPosts() {
         return posts;
     }

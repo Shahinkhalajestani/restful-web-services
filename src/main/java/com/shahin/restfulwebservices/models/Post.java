@@ -3,6 +3,8 @@ package com.shahin.restfulwebservices.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name ="Post")
@@ -10,6 +12,7 @@ public class Post {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
+    @Size(min=5 , max=100 , message = "Must be At least 2 Characters")
     private String description;
     @ManyToOne(fetch = FetchType.LAZY , cascade = {CascadeType.DETACH,CascadeType.REFRESH,
     CascadeType.MERGE,CascadeType.PERSIST})

@@ -1,10 +1,9 @@
 package com.shahin.restfulwebservices.repository;
 
-import com.shahin.restfulwebservices.models.User;
+import com.shahin.restfulwebservices.models.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserRepository extends JpaRepository<User,Integer> {
-    
+public interface PostRepository extends JpaRepository<Post, Integer> {
 }

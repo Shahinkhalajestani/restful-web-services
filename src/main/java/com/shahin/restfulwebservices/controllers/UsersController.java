@@ -2,6 +2,8 @@ package com.shahin.restfulwebservices.controllers;
 
 import com.shahin.restfulwebservices.models.Post;
 import com.shahin.restfulwebservices.models.User;
+import com.shahin.restfulwebservices.repository.PostRepository;
+import com.shahin.restfulwebservices.service.PostServiceImpl;
 import com.shahin.restfulwebservices.service.UserServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -34,6 +36,9 @@ public class UsersController {
     @Autowired
     private MessageSource messageSource;
 
+    @Autowired
+    private PostServiceImpl postService;
+
     @GetMapping("/users")
     public List<User> retrieveAllUsers() {
         return userServiceImpl.getUsers();
@@ -58,11 +63,30 @@ public class UsersController {
         userEntityModel.add(linkTo.withRel("all-users"));
         return userEntityModel;
     }
-    @ApiResponses(value = @ApiResponse(responseCode = "201" , description = "User Created",
+    @ApiResponses(value = @ApiResponse(responseCode = "201" , description = "Post Created",
     content = {@Content(mediaType="application/json",
-    schema = @Schema(implementation = User.class)),
+    schema = @Schema(implementation = Post.class)),
     @Content(mediaType = "application/xml",
-    schema = @Schema(implementation = User.class))}))
+    schema = @Schema(implementation = Post.class))}))
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Both Json And Xml Supported"
+            ,content ={@Content(mediaType="application/json",
+            schema = @Schema(implementation = User.class)),
+            @Content(mediaType = "application/xml",
+                    schema = @Schema(implementation = User.class))} )
+    @PostMapping("/users/{id}/posts")
+    public ResponseEntity<Object> createPost(@PathVariable Integer id,@Valid @RequestBody Post post) {
+        User user = userServiceImpl.getUserById(id);
+        post.setUser(user);
+        postService.save(post);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                .buildAndExpand(post.getId()).toUri();
+        return ResponseEntity.created(location).build();
+    }
+    @ApiResponses(value = @ApiResponse(responseCode = "201" , description = "User Created",
+            content = {@Content(mediaType="application/json",
+                    schema = @Schema(implementation = User.class)),
+                    @Content(mediaType = "application/xml",
+                            schema = @Schema(implementation = User.class))}))
     @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Both Json And Xml Supported"
             ,content ={@Content(mediaType="application/json",
             schema = @Schema(implementation = User.class)),
