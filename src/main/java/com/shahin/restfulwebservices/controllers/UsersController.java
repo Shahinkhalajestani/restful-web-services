@@ -3,7 +3,7 @@ package com.shahin.restfulwebservices.controllers;
 import com.shahin.restfulwebservices.dao.UserDao;
 import com.shahin.restfulwebservices.exception.UserNotFoundException;
 import com.shahin.restfulwebservices.models.User;
-import com.shahin.restfulwebservices.service.UserService;
+import com.shahin.restfulwebservices.service.UserServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -22,6 +22,7 @@ import javax.validation.*;
 import java.net.URI;
 import java.text.ParseException;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -32,7 +33,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class UsersController {
 
     @Autowired
-    private UserService userService;
+    private UserServiceImpl userServiceImpl;
 
     @Autowired
     private UserDao userDao;
@@ -42,7 +43,7 @@ public class UsersController {
 
     @GetMapping("/users")
     public List<User> retrieveAllUsers() {
-        return userService.getUsers();
+        return userServiceImpl.getUsers();
     }
 
     @Operation(summary = "Get a User By Its Id")
@@ -58,11 +59,11 @@ public class UsersController {
                     content = @Content)})
     @GetMapping("users/{id}")
     public EntityModel<User> retrieveUser(@PathVariable Integer id) throws ParseException {
-        User user = userDao.findOne(id);
-        if (user == null) {
+        Optional<User> user = userServiceImpl.getUserById(id);
+        if (!user.isPresent()) {
             throw new UserNotFoundException("id - " + id);
         }
-        EntityModel<User> userEntityModel = EntityModel.of(user);
+        EntityModel<User> userEntityModel = EntityModel.of(user.get());
         WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).retrieveAllUsers());
         userEntityModel.add(linkTo.withRel("all-users"));
         return userEntityModel;
