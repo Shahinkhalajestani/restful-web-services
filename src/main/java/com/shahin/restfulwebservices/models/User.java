@@ -1,6 +1,7 @@
 package com.shahin.restfulwebservices.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;

@@ -1,5 +1,6 @@
 package com.shahin.restfulwebservices.controllers;
 
+import com.shahin.restfulwebservices.models.Post;
 import com.shahin.restfulwebservices.models.User;
 import com.shahin.restfulwebservices.service.UserServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -84,6 +85,12 @@ public class UsersController {
     @GetMapping(path = "/hello-world-internationalized")
     public String helloWorldInternationalized() {
         return messageSource.getMessage("good.morning.message", null, LocaleContextHolder.getLocale());
+    }
+
+    @GetMapping(path="users/{id}/posts")
+    public List<Post> getUserPosts(@PathVariable Integer id){
+        User user = userServiceImpl.getUserById(id);
+        return user.getPosts();
     }
 
 

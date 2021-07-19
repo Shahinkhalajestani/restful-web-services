@@ -1,5 +1,7 @@
 package com.shahin.restfulwebservices.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -12,6 +14,7 @@ public class Post {
     @ManyToOne(fetch = FetchType.LAZY , cascade = {CascadeType.DETACH,CascadeType.REFRESH,
     CascadeType.MERGE,CascadeType.PERSIST})
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
 
     public Post() {
