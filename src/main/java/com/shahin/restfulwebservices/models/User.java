@@ -1,10 +1,14 @@
 package com.shahin.restfulwebservices.models;
 
 
+import org.springframework.util.CollectionUtils;
+
 import javax.persistence.*;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "User")
@@ -22,6 +26,10 @@ public class User {
     @Past(message = "must be before the current date")
     private Date birthDate ;
 
+    @OneToMany(mappedBy="user")
+    private List<Post> posts;
+
+
     public User() {
     }
 
@@ -29,6 +37,23 @@ public class User {
         this.id = id;
         this.name = name;
         birthDate = birthDate;
+    }
+
+    public void addPost(Post post){
+        if(CollectionUtils.isEmpty(this.posts)){
+            this.posts = new ArrayList<>();
+            posts.add(post);
+        }else{
+            posts.add(post);
+        }
+    }
+
+    public List<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
     }
 
     public Integer getId() {
