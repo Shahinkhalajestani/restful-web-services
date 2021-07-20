@@ -1,4 +1,4 @@
-package com.shahin.restfulwebservices.configuration;
+package com.shahin.restfulwebservices.configuration.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
