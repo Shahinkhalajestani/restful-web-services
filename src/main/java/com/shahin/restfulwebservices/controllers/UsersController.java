@@ -15,6 +15,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -39,6 +40,7 @@ public class UsersController {
     private PostService postService;
 
     @GetMapping("/users")
+    @PreAuthorize("hasAnyAuthority('student:read')")
     public List<User> retrieveAllUsers() {
         return userService.getUsers();
     }
@@ -55,6 +57,7 @@ public class UsersController {
             @ApiResponse(responseCode = "404", description = "User not found",
                     content = @Content)})
     @GetMapping("users/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_ADMINTRAINEE')")
     public EntityModel<User> retrieveUser(@PathVariable Integer id) {
         User user = userService.getUserById(id);
         EntityModel<User> userEntityModel = EntityModel.of(user);
@@ -73,6 +76,7 @@ public class UsersController {
             @Content(mediaType = "application/xml",
                     schema = @Schema(implementation = User.class))} )
     @PostMapping("/users/{id}/posts")
+    @PreAuthorize("hasAnyAuthority('post:write')")
     public ResponseEntity<Object> createPost(@PathVariable Integer id,@Valid @RequestBody PostModel postModel) {
         User user = userService.getUserById(id);
         postModel.setUser(user);
@@ -92,6 +96,7 @@ public class UsersController {
             @Content(mediaType = "application/xml",
                     schema = @Schema(implementation = User.class))} )
     @PostMapping("/users")
+    @PreAuthorize("hasAnyAuthority('student:write')")
     public ResponseEntity<Object> createUser(@Valid @RequestBody UserModel userModel) {
         User savedUser = userService.save(userModel);
         URI location = ServletUriComponentsBuilder
@@ -101,6 +106,7 @@ public class UsersController {
     }
 
     @DeleteMapping("/users/{id}")
+    @PreAuthorize("hasAnyAuthority('student:write')")
     public void deleteUser(@PathVariable Integer id) {
         userService.deleteUser(id);
     }
@@ -111,12 +117,14 @@ public class UsersController {
     }
 
     @GetMapping(path="users/{id}/posts")
+    @PreAuthorize("hasAnyAuthority('post:read')")
     public List<Post> getUserPosts(@PathVariable Integer id){
         User user = userService.getUserById(id);
         return user.getPosts();
     }
 
     @GetMapping("posts/{id}")
+    @PreAuthorize("hasAnyAuthority('post:read')")
     public EntityModel<Post> retrievePost(@PathVariable("id") Integer id){
         Post post = postService.getPostById(id);
         EntityModel<Post> postEntityModel = EntityModel.of(post);
@@ -125,6 +133,7 @@ public class UsersController {
         return postEntityModel;
     }
     @GetMapping("posts")
+    @PreAuthorize("hasAnyAuthority('post:read')")
     public List<Post> retrieveAllPosts(){
         return postService.getPosts();
     }

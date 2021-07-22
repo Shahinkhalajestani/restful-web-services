@@ -3,14 +3,13 @@ package com.shahin.restfulwebservices.configuration.security;
 import com.google.common.collect.Sets;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import javax.persistence.SecondaryTable;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.shahin.restfulwebservices.configuration.security.ApplicationUserPermission.*;
 
 public enum ApplicationUserRole {
-    STUDENT(Sets.newHashSet()),
+    STUDENT(Sets.newHashSet(STUDENT_READ)),
     ADMIN(Sets.newHashSet(POST_READ, POST_WRITE,STUDENT_READ,STUDENT_WRITE)),
     ADMINTRAINEE(Sets.newHashSet(POST_READ,STUDENT_READ));
 
