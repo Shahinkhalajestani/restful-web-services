@@ -1,5 +1,6 @@
 package com.shahin.restfulwebservices.service;
 
+import com.shahin.restfulwebservices.controllers.PostModel;
 import com.shahin.restfulwebservices.exception.PostNotFoundException;
 import com.shahin.restfulwebservices.models.Post;
 import com.shahin.restfulwebservices.repository.PostRepository;
@@ -37,6 +38,19 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<Post> getPosts() {
-        return null;
+        return postRepository.findAll();
+    }
+
+    @Override
+    public Post save(PostModel postModel) {
+        Post post = mapPostModelToPost(postModel);
+        return this.save(post);
+    }
+
+    private Post mapPostModelToPost(PostModel postModel) {
+        Post post = new Post();
+        post.setDescription(postModel.getDescription());
+        post.setUser(postModel.getUser());
+        return post;
     }
 }

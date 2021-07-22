@@ -1,5 +1,6 @@
 package com.shahin.restfulwebservices.service;
 
+import com.shahin.restfulwebservices.controllers.PostModel;
 import com.shahin.restfulwebservices.models.Post;
 import com.shahin.restfulwebservices.models.User;
 
@@ -10,4 +11,5 @@ public interface PostService {
     Post save(Post post);
     Post getPostById(Integer id);
     List<Post> getPosts();
+    Post save(PostModel post);
 }

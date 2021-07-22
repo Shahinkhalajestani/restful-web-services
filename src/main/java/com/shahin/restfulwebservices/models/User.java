@@ -1,13 +1,9 @@
 package com.shahin.restfulwebservices.models;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.springframework.util.CollectionUtils;
-
 import javax.persistence.*;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -27,7 +23,7 @@ public class User {
     @Past(message = "must be before the current date")
     private Date birthDate ;
 
-    @OneToMany(mappedBy="user")
+    @OneToMany(mappedBy="user",cascade = CascadeType.ALL)
     private List<Post> posts;
 
 
@@ -37,7 +33,7 @@ public class User {
     public User(Integer id, String name, Date birthDate) {
         this.id = id;
         this.name = name;
-        birthDate = birthDate;
+        this.birthDate = birthDate;
     }
 
     public List<Post> getPosts() {

@@ -1,5 +1,6 @@
 package com.shahin.restfulwebservices.service;
 
+import com.shahin.restfulwebservices.controllers.UserModel;
 import com.shahin.restfulwebservices.exception.UserNotFoundException;
 import com.shahin.restfulwebservices.models.User;
 import com.shahin.restfulwebservices.repository.UserRepository;
@@ -18,6 +19,19 @@ public class UserServiceImpl implements UserService {
 
     public List<User> getUsers() {
         return userRepository.findAll();
+    }
+
+    @Override
+    public User save(UserModel userModel) {
+        User user = mapUserModelToUser(userModel);
+        return this.save(user);
+    }
+
+    private User mapUserModelToUser(UserModel userModel) {
+        User user = new User();
+        user.setName(userModel.getName());
+        user.setBirthDate(userModel.getBirthDate());
+        return user;
     }
 
     public User getUserById(Integer id){

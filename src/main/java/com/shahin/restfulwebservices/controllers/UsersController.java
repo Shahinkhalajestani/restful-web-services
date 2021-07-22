@@ -2,9 +2,8 @@ package com.shahin.restfulwebservices.controllers;
 
 import com.shahin.restfulwebservices.models.Post;
 import com.shahin.restfulwebservices.models.User;
-import com.shahin.restfulwebservices.repository.PostRepository;
-import com.shahin.restfulwebservices.service.PostServiceImpl;
-import com.shahin.restfulwebservices.service.UserServiceImpl;
+import com.shahin.restfulwebservices.service.PostService;
+import com.shahin.restfulwebservices.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -31,17 +30,17 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class UsersController {
 
     @Autowired
-    private UserServiceImpl userServiceImpl;
+    private UserService userService;
 
     @Autowired
     private MessageSource messageSource;
 
     @Autowired
-    private PostServiceImpl postService;
+    private PostService postService;
 
     @GetMapping("/users")
     public List<User> retrieveAllUsers() {
-        return userServiceImpl.getUsers();
+        return userService.getUsers();
     }
 
     @Operation(summary = "Get a User By Its Id")
@@ -57,7 +56,7 @@ public class UsersController {
                     content = @Content)})
     @GetMapping("users/{id}")
     public EntityModel<User> retrieveUser(@PathVariable Integer id) {
-        User user = userServiceImpl.getUserById(id);
+        User user = userService.getUserById(id);
         EntityModel<User> userEntityModel = EntityModel.of(user);
         WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).retrieveAllUsers());
         userEntityModel.add(linkTo.withRel("all-users"));
@@ -74,10 +73,10 @@ public class UsersController {
             @Content(mediaType = "application/xml",
                     schema = @Schema(implementation = User.class))} )
     @PostMapping("/users/{id}/posts")
-    public ResponseEntity<Object> createPost(@PathVariable Integer id,@Valid @RequestBody Post post) {
-        User user = userServiceImpl.getUserById(id);
-        post.setUser(user);
-        postService.save(post);
+    public ResponseEntity<Object> createPost(@PathVariable Integer id,@Valid @RequestBody PostModel postModel) {
+        User user = userService.getUserById(id);
+        postModel.setUser(user);
+        Post post = postService.save(postModel);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(post.getId()).toUri();
         return ResponseEntity.created(location).build();
@@ -93,8 +92,8 @@ public class UsersController {
             @Content(mediaType = "application/xml",
                     schema = @Schema(implementation = User.class))} )
     @PostMapping("/users")
-    public ResponseEntity<Object> createUser(@Valid @RequestBody User user) {
-        User savedUser = userServiceImpl.save(user);
+    public ResponseEntity<Object> createUser(@Valid @RequestBody UserModel userModel) {
+        User savedUser = userService.save(userModel);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest().path("/{id}")
                 .buildAndExpand(savedUser.getId()).toUri();
@@ -103,7 +102,7 @@ public class UsersController {
 
     @DeleteMapping("/users/{id}")
     public void deleteUser(@PathVariable Integer id) {
-        userServiceImpl.deleteUser(id);
+        userService.deleteUser(id);
     }
 
     @GetMapping(path = "/hello-world-internationalized")
@@ -113,8 +112,21 @@ public class UsersController {
 
     @GetMapping(path="users/{id}/posts")
     public List<Post> getUserPosts(@PathVariable Integer id){
-        User user = userServiceImpl.getUserById(id);
+        User user = userService.getUserById(id);
         return user.getPosts();
+    }
+
+    @GetMapping("posts/{id}")
+    public EntityModel<Post> retrievePost(@PathVariable("id") Integer id){
+        Post post = postService.getPostById(id);
+        EntityModel<Post> postEntityModel = EntityModel.of(post);
+        WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).retrieveAllPosts());
+        postEntityModel.add(linkTo.withRel("get-all-posts"));
+        return postEntityModel;
+    }
+    @GetMapping("posts")
+    public List<Post> retrieveAllPosts(){
+        return postService.getPosts();
     }
 
 
