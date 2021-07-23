@@ -69,7 +69,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin()
                 .loginPage("/login").permitAll()
-                .defaultSuccessUrl("/api/users",true)
+                .defaultSuccessUrl("/users",true)
                 .and()
                 .rememberMe().tokenValiditySeconds((int)TimeUnit.DAYS.toSeconds(21))
                 .key("something Very Secured")
