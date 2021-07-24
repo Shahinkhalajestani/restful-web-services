@@ -7,21 +7,25 @@ import java.util.Collection;
 
 public class ApplicationUser implements UserDetails {
 
-    private final Collection<? extends  GrantedAuthority> grantedAuthorities;
-    private final String password;
+
     private final String username;
+    private final String password;
+    private final Collection<? extends  GrantedAuthority> grantedAuthorities;
     private final boolean isAccountNonExpired;
     private final boolean isAccountNonLocked;
     private final boolean isCredentialsNonExpired;
     private final boolean isEnabled;
 
-    public ApplicationUser(Collection<? extends GrantedAuthority> grantedAuthorities,
-                           String password, String username,
-                           boolean isAccountNonExpired, boolean isAccountNonLocked,
-                           boolean isCredentialsNonExpired, boolean isEnabled) {
-        this.grantedAuthorities = grantedAuthorities;
-        this.password = password;
+    public ApplicationUser(String username,
+                           String password,
+                           Collection<? extends GrantedAuthority> grantedAuthorities,
+                           boolean isAccountNonExpired,
+                           boolean isAccountNonLocked,
+                           boolean isCredentialsNonExpired,
+                           boolean isEnabled) {
         this.username = username;
+        this.password = password;
+        this.grantedAuthorities = grantedAuthorities;
         this.isAccountNonExpired = isAccountNonExpired;
         this.isAccountNonLocked = isAccountNonLocked;
         this.isCredentialsNonExpired = isCredentialsNonExpired;
