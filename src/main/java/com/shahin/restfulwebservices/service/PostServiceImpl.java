@@ -7,6 +7,7 @@ import com.shahin.restfulwebservices.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,16 +18,19 @@ public class PostServiceImpl implements PostService {
     private PostRepository postRepository;
 
     @Override
+    @Transactional
     public void deletePost(Integer id) {
         postRepository.deleteById(id);
     }
 
     @Override
+    @Transactional
     public Post save(Post post) {
         return postRepository.save(post);
     }
 
     @Override
+    @Transactional
     public Post getPostById(Integer id) {
         Optional<Post> post = postRepository.findById(id);
         if (post.isEmpty()){
@@ -37,11 +41,13 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional
     public List<Post> getPosts() {
         return postRepository.findAll();
     }
 
     @Override
+    @Transactional
     public Post save(PostModel postModel) {
         Post post = mapPostModelToPost(postModel);
         return this.save(post);

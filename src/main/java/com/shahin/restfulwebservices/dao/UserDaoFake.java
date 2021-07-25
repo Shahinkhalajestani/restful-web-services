@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-public class UserDao {
+public class UserDaoFake {
     private static List<User> users = new ArrayList<>();
     private static int userCount = 2;
     @Autowired

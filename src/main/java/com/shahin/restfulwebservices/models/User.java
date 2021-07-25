@@ -18,7 +18,7 @@ public class User {
     @Column(name="name")
     @Size(min = 2, max=20,message = "must be between 2 and 20")
     private String name ;
-    
+
     @Column(name="birthDate")
     @Past(message = "must be before the current date")
     private Date birthDate ;

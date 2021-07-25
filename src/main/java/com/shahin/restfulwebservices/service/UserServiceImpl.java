@@ -7,6 +7,7 @@ import com.shahin.restfulwebservices.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,12 +17,14 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
-
+    @Override
+    @Transactional
     public List<User> getUsers() {
         return userRepository.findAll();
     }
 
     @Override
+    @Transactional
     public User save(UserModel userModel) {
         User user = mapUserModelToUser(userModel);
         return this.save(user);
@@ -34,6 +37,8 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
+    @Override
+    @Transactional
     public User getUserById(Integer id){
         Optional<User> user = userRepository.findById(id);
         if (user.isEmpty()) {
@@ -44,10 +49,14 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    @Transactional
     public User save(User user) {
         return userRepository.save(user);
     }
 
+    @Override
+    @Transactional
     public void deleteUser(Integer id) {
         userRepository.deleteById(id);
     }

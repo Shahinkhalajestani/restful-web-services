@@ -7,8 +7,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 @Service
 public class ApplicationUserServiceImpl implements ApplicationUserService{
+
 
 
     private final ApplicationUserDao applicationUserDao;
@@ -19,6 +22,7 @@ public class ApplicationUserServiceImpl implements ApplicationUserService{
     }
 
     @Override
+    @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return applicationUserDao.selectApplicationUserByUserName(username)
                 .orElseThrow(() ->
