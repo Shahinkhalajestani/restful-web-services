@@ -28,6 +28,6 @@ data
 build/
 !**/src/main/**/build/
 !**/src/test/**/build/
-
+data
 ### VS Code ###
 .vscode/
