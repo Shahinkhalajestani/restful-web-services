@@ -3,6 +3,7 @@ package com.shahin.restfulwebservices.jwt;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,10 +19,9 @@ import java.time.LocalDate;
 import java.util.Date;
 
 public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
-
-
     private final AuthenticationManager authenticationManager;
 
+    @Autowired
     public JwtUsernameAndPasswordAuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
     }
@@ -47,11 +47,12 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
                                             HttpServletResponse response,
                                             FilterChain chain,
                                             Authentication authResult) throws IOException, ServletException {
+        String secureKey = "shahin created this long ass string for more security and it is working like a charm";
         String token = Jwts.builder().setSubject(authResult.getName())
                 .claim("authorities", authResult.getAuthorities())
                 .setIssuedAt(new Date())
                 .setExpiration(java.sql.Date.valueOf(LocalDate.now().plusWeeks(2)))
-                .signWith(Keys.hmacShaKeyFor("securesecuresecuresecuresecuresecuresecure".getBytes()))
+                .signWith(Keys.hmacShaKeyFor(secureKey.getBytes()))
                 .compact();
         response.addHeader("Authorization","Bearer "+ token);
     }

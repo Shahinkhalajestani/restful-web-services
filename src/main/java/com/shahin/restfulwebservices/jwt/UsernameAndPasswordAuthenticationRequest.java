@@ -10,6 +10,9 @@ public class UsernameAndPasswordAuthenticationRequest {
         this.password = password;
     }
 
+    public UsernameAndPasswordAuthenticationRequest() {
+    }
+
     public String getUsername() {
         return username;
     }
