@@ -1,5 +1,6 @@
 package com.shahin.restfulwebservices.configuration.security;
 
+import com.shahin.restfulwebservices.jwt.JwtTokenVerifier;
 import com.shahin.restfulwebservices.jwt.JwtUsernameAndPasswordAuthenticationFilter;
 import com.shahin.restfulwebservices.service.ApplicationUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .addFilter(new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager()))
+                .addFilterAfter(new JwtTokenVerifier(),JwtUsernameAndPasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers("/","index","/css/*","/js/*").permitAll()
                 .anyRequest()
