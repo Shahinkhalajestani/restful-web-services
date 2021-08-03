@@ -4,11 +4,6 @@ import com.shahin.restfulwebservices.models.Post;
 import com.shahin.restfulwebservices.models.User;
 import com.shahin.restfulwebservices.service.PostService;
 import com.shahin.restfulwebservices.service.UserService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -45,17 +40,6 @@ public class UsersController {
         return userService.getUsers();
     }
 
-    @Operation(summary = "Get a User By Its Id")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Found The Book",
-                    content = {@Content(mediaType = "application/xml",
-                            schema = @Schema(implementation = User.class)),
-                            @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = User.class))}),
-            @ApiResponse(responseCode = "400", description = "Invalid Id supplied",
-                    content = @Content),
-            @ApiResponse(responseCode = "404", description = "User not found",
-                    content = @Content)})
     @GetMapping("users/{id}")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_ADMINTRAINEE')")
     public EntityModel<User> retrieveUser(@PathVariable Integer id) {
@@ -65,16 +49,6 @@ public class UsersController {
         userEntityModel.add(linkTo.withRel("all-users"));
         return userEntityModel;
     }
-    @ApiResponses(value = @ApiResponse(responseCode = "201" , description = "Post Created",
-    content = {@Content(mediaType="application/json",
-    schema = @Schema(implementation = Post.class)),
-    @Content(mediaType = "application/xml",
-    schema = @Schema(implementation = Post.class))}))
-    @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Both Json And Xml Supported"
-            ,content ={@Content(mediaType="application/json",
-            schema = @Schema(implementation = User.class)),
-            @Content(mediaType = "application/xml",
-                    schema = @Schema(implementation = User.class))} )
     @PostMapping("/users/{id}/posts")
     @PreAuthorize("hasAnyAuthority('post:write')")
     public ResponseEntity<Object> createPost(@PathVariable Integer id,@Valid @RequestBody PostModel postModel) {
@@ -85,16 +59,6 @@ public class UsersController {
                 .buildAndExpand(post.getId()).toUri();
         return ResponseEntity.created(location).build();
     }
-    @ApiResponses(value = @ApiResponse(responseCode = "201" , description = "User Created",
-            content = {@Content(mediaType="application/json",
-                    schema = @Schema(implementation = User.class)),
-                    @Content(mediaType = "application/xml",
-                            schema = @Schema(implementation = User.class))}))
-    @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Both Json And Xml Supported"
-            ,content ={@Content(mediaType="application/json",
-            schema = @Schema(implementation = User.class)),
-            @Content(mediaType = "application/xml",
-                    schema = @Schema(implementation = User.class))} )
     @PostMapping("/users")
     @PreAuthorize("hasAnyAuthority('student:write')")
     public ResponseEntity<Object> createUser(@Valid @RequestBody UserModel userModel) {
