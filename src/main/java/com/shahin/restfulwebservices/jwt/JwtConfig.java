@@ -3,8 +3,10 @@ package com.shahin.restfulwebservices.jwt;
 import com.google.common.net.HttpHeaders;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 
 @Configuration
+@PropertySource(value = "classpath:security.properties",ignoreResourceNotFound = true)
 @ConfigurationProperties(prefix ="application.jwt")
 public class JwtConfig {
     private String secureKey;
