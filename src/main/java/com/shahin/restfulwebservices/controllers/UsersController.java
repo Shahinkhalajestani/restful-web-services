@@ -4,6 +4,8 @@ import com.shahin.restfulwebservices.models.Post;
 import com.shahin.restfulwebservices.models.User;
 import com.shahin.restfulwebservices.service.PostService;
 import com.shahin.restfulwebservices.service.UserService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Authorization;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -41,6 +43,7 @@ public class UsersController {
 
     @GetMapping("/users")
     @PreAuthorize("hasAnyAuthority('student:read')")
+    @ApiOperation(value = "retrieveAllUsers", authorizations = { @Authorization(value="jwtToken") })
     public List<User> retrieveAllUsers() {
         return userService.getUsers();
     }
