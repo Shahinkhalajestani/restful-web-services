@@ -1,4 +1,4 @@
-package com.shahin.restfulwebservices.configuration.security;
+package com.shahin.restfulwebservices.configuration;
 
 import com.google.common.collect.Lists;
 import org.springframework.context.annotation.Bean;
